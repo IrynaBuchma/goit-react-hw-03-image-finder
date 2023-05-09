@@ -1,64 +1,122 @@
 import React, { Component } from 'react';
-import Modal from '../components/Modal/Modal';
+// import Modal from '../components/Modal/Modal';
 import Button from '../components/Button/Button';
-import {ReactComponent as SearchIcon} from './icons/search.svg';
+// import {ReactComponent as SearchIcon} from './icons/search.svg';
 import Searchbar from './Searchbar/Searchbar';
+import { fetchImages } from './FetchImages/FetchImages';
+import ImageGallery from './ImageGallery/ImageGallery';
+import Loader from './Loader/Loader';
+import Notiflix from 'notiflix';
+// import Notiflix from 'notiflix';
 
-
+let page = 1;
 export class App extends Component {
 
   state = {
+    inputData: '',
     images:[],
-    loading: false,
-    showModal: false
+    status: 'idle',
+    totalHits: 0,
   }
 
-  componentDidMount() {
-    this.setState({ loading: true });
+  handleFormsubmit = async inputData => {
+    page = 1;
 
-    setTimeout(() => {
-    fetch ('https://pixabay.com/api/?key=34731135-6d68099f6d308706ad328c34f&q=yellow+flowers')
-      .then(res => res.json())
-      .then(images => this.setState(({ images })))
-      .finally(() => this.setState({ loading: false }));
-    }, 2000);
+    if(inputData.trim() === '') {
+      Notiflix.Notify.failure('Please input request data');
+      return;
+    }
+    else {
+      try {
+        this.setState({ status: 'pending'});
+        const { totalHits, hits } = await fetchImages(inputData, page);
+          if(hits.length < 1) {
+          this.setState({ status: 'idle'});
+          Notiflix.Notify.info('Sorry, there are no images matching your search query');
+          }
+        else {
+          this.setState({
+            images: hits,
+            inputData,
+            totalHits: totalHits,
+            status: 'resolved',
+          })
+        }
+      } catch (error) {
+        this.setState({ status: 'rejected' });
+      }
+    }     
   }
+  onNextPage = async() => {
+    this.setState({ status: 'pending' });
 
-  toggleModal = () => {
-    this.setState({showModal: !this.state.showModal});
+    try {
+
+      const { hits } = await fetchImages(this.state.inputData, (page += 1));
+      this.setState(prevState => ({
+        images: [...prevState.images, ...hits],
+        status: 'resolved'
+      }))
+
+    } catch (error) {
+      this.setState({ status: 'rejected' });
+    }
   }
 
   render() {
 
-    const { showModal } = this.state;
+    const { totalHits, status, images } = this.state;
 
-    return (
-      <div
-        style={{
-          height: '100vh',
-          display: 'flex',
-          flexWrap: 'wrap',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          fontSize: 40,
-          color: '#010101'
-        }}
-      >
-        <div>
-          <Searchbar></Searchbar>
+    if (status === 'idle') {
+      return (
+        <div className='app'>
+          <Searchbar onSubmit={this.handleFormsubmit}></Searchbar>
         </div>
-          <Button children={<SearchIcon width="40" height="40" fill="blue"></SearchIcon>} onClick={this.toggleModal} aria-label="Search" allyProps/>
-          <h1>Wellcome</h1>
-          <button type="button" onClick={this.toggleModal}>Open Modal 
-            {showModal && (
-              <Modal onClose={this.toggleModal}>
-                <h2>Hello</h2>
-                <button type="button" onClick={this.toggleModal}>Close
-                </button>
-              </Modal>)}
-          </button>
+      )
+    }
+
+    if (status === 'pending') {
+      return (
+      <div className='app'>
+        <Searchbar onSubmit={this.handleFormsubmit}></Searchbar>
+        <ImageGallery page={page} images={images}></ImageGallery>
+        <Loader></Loader>
+        {totalHits > 12 && <Button onClick={this.onNextPage}></Button>}
+      </div> 
+      )
+    }
+
+    if (status === 'rejected') {
+      return (
+        <div className='app'>
+          <Searchbar onSubmit={this.handleFormsubmit}></Searchbar>
+          <p>Something went wrong, please try again later</p>
         </div>
-    );
-  }
+      )
+    }
+
+    if (status === 'resolved') {
+      return (
+        <div className='app'
+          style={{
+            height: '100vh',
+            display: 'flex',
+            flexWrap: 'wrap',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            fontSize: 40,
+            color: '#010101'
+          }}
+        >
+          <Searchbar onSubmit={this.handleFormsubmit}></Searchbar>
+          <ImageGallery page={page} images={images}></ImageGallery>
+          {totalHits > 12 && totalHits > images.length && (
+          <Button onClick={this.onNextPage}></Button>
+          )}
+        </div>
+      );
+    }
+    }
 };
+

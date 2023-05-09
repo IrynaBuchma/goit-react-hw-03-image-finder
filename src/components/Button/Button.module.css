@@ -1,4 +1,4 @@
-.searchform__button {
+.button__load {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -20,6 +20,6 @@
     }
 }
 
-.icon-search {
+/* .icon-search {
     margin-right: 10px;
-}
+} */

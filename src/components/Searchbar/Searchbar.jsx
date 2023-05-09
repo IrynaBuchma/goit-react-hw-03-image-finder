@@ -2,6 +2,7 @@ import React, {Component} from "react";
 import PropTypes from 'prop-types';
 import css from './Searchbar.module.css';
 import { FaSearch } from 'react-icons/fa';
+// import Notiflix from 'notiflix';
 
 export default class Searchbar extends Component {
 
@@ -15,8 +16,7 @@ export default class Searchbar extends Component {
 
     handleSubmit = (e) => {
         e.preventDefault();
-        const { inputData } = this.state;
-        this.props.onSubmit({ inputData });
+        this.props.onSubmit(this.state.inputData);
         this.setState({ inputData: '', });
     }
 
@@ -24,7 +24,7 @@ export default class Searchbar extends Component {
 
         const { inputData } = this.state;
         return (
-            <header classNameName={css.searchbar}>
+            <header className={css.searchbar}>
                 <form className={css.searchform} onSubmit={this.handleSubmit}>
                     
                     <input
@@ -33,13 +33,13 @@ export default class Searchbar extends Component {
                         value={inputData}
                         onChange={this.onInputChange}
                         type="text"
-                        autocomplete="off"
-                        autofocus
+                        autoComplete="off"
+                        autoFocus
                         placeholder="Search images and photos"
                     />
 
                     <button type="submit" className={css.searchform__btn}>
-                        <FaSearch width="2em" height="2em" fill="blue"/>
+                        <FaSearch size={25} fill="blue"/>
                         <span className={css.searchform__btnLabel}>Search</span>
                     </button>
                 </form>
@@ -49,7 +49,7 @@ export default class Searchbar extends Component {
 }
 
 Searchbar.propTypes = {
- inputData: PropTypes.string.isRequired,
- onInputChange: PropTypes.func.isRequired,
- onSearch: PropTypes.func.isRequired,
+ inputData: PropTypes.string,
+ onInputChange: PropTypes.func,
+ onSearch: PropTypes.func,
 }

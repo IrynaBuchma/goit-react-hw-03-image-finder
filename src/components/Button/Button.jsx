@@ -1,22 +1,17 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 import css from './Button.module.css';
+import PropTypes from 'prop-types';
 
 
-const Button = ({ children, onClick, ...allyProps }) => (
-    <button class={css.searchform__button} type="submit" onClick={onClick} {...allyProps}>{children}</button>
-        /* <img class={icon-search} src="./images/search.svg" alt="icon-search" width="16" heigh="18"/> */       
-);
+const Button = ({ onClick }) => {
+    return (
+        <button className={css.button__load} type="button" onClick={onClick}>
+            Load more
+        </button>      
+    );
+}
 
-Button.defaultProps = {
-    onClick: () => null,
-    children: null,
-};
+export default Button;
 
 Button.propTypes = {
     onClick: PropTypes.func.isRequired,
-    children: PropTypes.node.isRequired,
-    'aria-label': PropTypes.string.isRequired,
-};
-
-export default Button;
+}

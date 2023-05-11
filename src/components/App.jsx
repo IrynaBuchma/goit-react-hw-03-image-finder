@@ -97,18 +97,7 @@ export class App extends Component {
 
     if (status === 'resolved') {
       return (
-        <div className='app'
-          style={{
-            height: '100vh',
-            display: 'flex',
-            flexWrap: 'wrap',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-            fontSize: 40,
-            color: '#010101'
-          }}
-        >
+        <div className='app'>
           <Searchbar onSubmit={this.handleFormsubmit}></Searchbar>
           <ImageGallery page={page} images={images}></ImageGallery>
           {totalHits > 12 && totalHits > images.length && (

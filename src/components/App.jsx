@@ -7,9 +7,7 @@ import { fetchImages } from './FetchImages/FetchImages';
 import ImageGallery from './ImageGallery/ImageGallery';
 import Loader from './Loader/Loader';
 import Notiflix from 'notiflix';
-// import Notiflix from 'notiflix';
 
-let page = 1;
 export class App extends Component {
 
   state = {
@@ -17,19 +15,20 @@ export class App extends Component {
     images:[],
     status: 'idle',
     totalHits: 0,
+    page: 1
   }
 
-  handleFormsubmit = async inputData => {
-    page = 1;
-
-    if(inputData.trim() === '') {
-      Notiflix.Notify.failure('Please input request data');
-      return;
+  componentDidUpdate(prevState) {
+    if (this.state.inputData !== prevState.inputData) {
+      this.onNextPage(this.state.inputData);
     }
-    else {
+    return;
+  }
+
+  fetchData = async (inputData) => {
       try {
         this.setState({ status: 'pending'});
-        const { totalHits, hits } = await fetchImages(inputData, page);
+        const { totalHits, hits, page } = await fetchImages(inputData);
           if(hits.length < 1) {
           this.setState({ status: 'idle'});
           Notiflix.Notify.info('Sorry, there are no images matching your search query');
@@ -40,20 +39,34 @@ export class App extends Component {
             inputData,
             totalHits: totalHits,
             status: 'resolved',
+            page,
           })
         }
-      } catch (error) {
+      }
+      catch (error) {
         this.setState({ status: 'rejected' });
       }
-    }     
+    }    
+
+  handleFormsubmit = async (inputData) => {
+
+    if(inputData.trim() === '') {
+      Notiflix.Notify.failure('Please input request data');
+      return;
+    } 
+    else {
+      this.fetchData(inputData);
+    }
   }
+
   onNextPage = async() => {
     this.setState({ status: 'pending' });
 
     try {
-
-      const { hits } = await fetchImages(this.state.inputData, (page += 1));
+      const { inputData, page } = this.state;
+      const { hits } = await fetchImages(inputData, page + 1);
       this.setState(prevState => ({
+        page: prevState.page + 1,
         images: [...prevState.images, ...hits],
         status: 'resolved'
       }))
@@ -65,7 +78,7 @@ export class App extends Component {
 
   render() {
 
-    const { totalHits, status, images } = this.state;
+    const { totalHits, status, images, page } = this.state;
 
     if (status === 'idle') {
       return (
@@ -106,6 +119,5 @@ export class App extends Component {
         </div>
       );
     }
-    }
-};
-
+  }
+}

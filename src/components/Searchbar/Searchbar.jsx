@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import PropTypes from 'prop-types';
 import css from './Searchbar.module.css';
 import { FaSearch } from 'react-icons/fa';
-// import Notiflix from 'notiflix';
+import Notiflix from 'notiflix';
 
 export default class Searchbar extends Component {
 
@@ -16,6 +16,11 @@ export default class Searchbar extends Component {
 
     handleSubmit = (e) => {
         e.preventDefault();
+
+        if(this.state.inputData.trim() === '') {
+            Notiflix.Notify.failure('Please input request data');
+            return;
+          } 
         this.props.onSubmit(this.state.inputData);
         this.setState({ inputData: '', });
     }
@@ -23,6 +28,7 @@ export default class Searchbar extends Component {
     render() {
 
         const { inputData } = this.state;
+        
         return (
             <header className={css.searchbar}>
                 <form className={css.searchform} onSubmit={this.handleSubmit}>

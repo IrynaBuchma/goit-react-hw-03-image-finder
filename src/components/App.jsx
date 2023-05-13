@@ -13,39 +13,37 @@ export class App extends Component {
     images:[],
     totalHits: 0,
     page: 1,
-    status: idle,
+    status: 'idle',
     isButtonShown: false,
   }
   
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps) {
 
-    const newInput = this.state.inputData;
-    const newPage = this.state.page;
+    const inputData = this.props.inputData;
+    const page = this.props.page;
 
-    if (newInput !== prevProps.inputData || newPage !== prevState.page) {
-      this.fetchData(newInput, newPage);
+    if (inputData !== prevProps.inputData || page !== prevProps.page) {
+      this.fetchData(inputData, page);
     }
   }
 
-  handleFormsubmit = (newInput) => {
+  handleFormsubmit = (inputData) => {
 
-      this.setState({ 
-        inputData: newInput,
-      });
+      this.setState({ inputData });
     }
 
-    fetchData = async(newInput, newPage) => {
+  fetchData = async(inputData, page) => {
       
       try {
         this.setState({ status: 'pending'});
-        const { totalHits, hits } = await fetchImages(newInput, newPage);
+        const { totalHits, hits } = await fetchImages(inputData, page);
           if(hits.length < 1) {
           this.setState({ status: 'idle'});
           Notiflix.Notify.info('Sorry, there are no images matching your search query');
           return;
           }
-              this.setState(prevState => ({
-              images: [...prevState.images, ...hits],
+              this.setState(prevProps => ({
+              images: [...prevProps.images, ...hits],
               totalHits: totalHits,
               isButtonShown: true,
               status: 'resolved',

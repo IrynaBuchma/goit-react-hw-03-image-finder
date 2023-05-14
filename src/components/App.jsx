@@ -17,19 +17,26 @@ export class App extends Component {
     isButtonShown: false,
   }
   
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
 
-    const inputData = this.props.inputData;
-    const page = this.props.page;
+    const { inputData, page } = this.state;
+    
 
-    if (inputData !== prevProps.inputData || page !== prevProps.page) {
+    if (inputData !== prevState.inputData || page !== prevState.page) {
       this.fetchData(inputData, page);
     }
   }
 
   handleFormsubmit = (inputData) => {
 
-      this.setState({ inputData });
+      this.setState({ 
+        inputData,
+        images:[],
+        totalHits: 0,
+        page: 1,
+        status: 'idle',
+        isButtonShown: false,
+      });
     }
 
   fetchData = async(inputData, page) => {
@@ -42,8 +49,8 @@ export class App extends Component {
           Notiflix.Notify.info('Sorry, there are no images matching your search query');
           return;
           }
-              this.setState(prevProps => ({
-              images: [...prevProps.images, ...hits],
+              this.setState(prevState => ({
+              images: [...prevState.images, ...hits],
               totalHits: totalHits,
               isButtonShown: true,
               status: 'resolved',

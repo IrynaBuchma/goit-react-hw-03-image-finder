@@ -63,10 +63,9 @@ export class App extends Component {
     }  
 
   onNextPage = (page, totalHits) => {
-    /* const { page, totalHits } = this.state; */
+    
     this.setState(prevState => ({
       page: prevState.page + 1,
-      isButtonShown: page < Math.ceil(totalHits / 12),
     }))
   }
     
@@ -74,59 +73,59 @@ export class App extends Component {
 
     const { status, images, page, isButtonShown } = this.state;
 
-      // return (
-      //   <div className='app'> 
-      //       <Searchbar onSubmit={this.handleFormsubmit}/>
-      //       {pending && (
-      //       <Loader></Loader>
-      //       )}
-      //       {resolved && (
-      //       <ImageGallery page={page} images={images}></ImageGallery>
-      //       )}
-      //       {rejected && (
-      //       <p>Something went wrong, please try again later</p>
-      //       )}
-      //       {isButtonShown && (
-      //       <Button onClick={this.onNextPage}></Button>
-      //       )}
-      //   </div>
-      // )
-    if (status === 'idle') {
       return (
-        <div className='app'>
-          <Searchbar onSubmit={this.handleFormsubmit}></Searchbar>
+        <div className='app'> 
+            <Searchbar onSubmit={this.handleFormsubmit}/>
+            {status === 'pending' && (
+            <Loader></Loader>
+            )}
+            {images.length > 0 && (
+            <ImageGallery images={images}/>
+            )}
+            {status === 'rejected' && (
+            <p>Something went wrong, please try again later</p>
+            )}
+            {isButtonShown && (
+            <Button onClick={this.onNextPage}></Button>
+            )}
         </div>
       )
-    }
+    // if (status === 'idle') {
+    //   return (
+    //     <div className='app'>
+    //       <Searchbar onSubmit={this.handleFormsubmit}></Searchbar>
+    //     </div>
+    //   )
+    // }
 
-    if (status === 'pending') {
-      return (
-      <div className='app'>
-        <Searchbar onSubmit={this.handleFormsubmit}></Searchbar>
-        <ImageGallery page={page} images={images}></ImageGallery>
-        <Loader></Loader>
-        {isButtonShown && <Button onClick={this.onNextPage}></Button>}
-      </div> 
-      )
-    }
+    // if (status === 'pending') {
+    //   return (
+    //   <div className='app'>
+    //     <Searchbar onSubmit={this.handleFormsubmit}></Searchbar>
+    //     <ImageGallery images={images}></ImageGallery>
+    //     <Loader></Loader>
+    //     {isButtonShown && <Button onClick={this.onNextPage}></Button>}
+    //   </div> 
+    //   )
+    // }
 
-    if (status === 'rejected') {
-      return (
-        <div className='app'>
-          <Searchbar onSubmit={this.handleFormsubmit}></Searchbar>
-          <p>Something went wrong, please try again later</p>
-        </div>
-      )
-    }
+    // if (status === 'rejected') {
+    //   return (
+    //     <div className='app'>
+    //       <Searchbar onSubmit={this.handleFormsubmit}></Searchbar>
+    //       <p>Something went wrong, please try again later</p>
+    //     </div>
+    //   )
+    // }
 
-    if (status === 'resolved') {
-      return (
-        <div className='app'>
-          <Searchbar onSubmit={this.handleFormsubmit}></Searchbar>
-          <ImageGallery page={page} images={images}></ImageGallery>
-          {isButtonShown && <Button onClick={this.onNextPage}></Button>}
-        </div>
-      );
-    }
+    // if (status === 'resolved') {
+    //   return (
+    //     <div className='app'>
+    //       <Searchbar onSubmit={this.handleFormsubmit}></Searchbar>
+    //       <ImageGallery page={page} images={images}></ImageGallery>
+    //       {isButtonShown && <Button onClick={this.onNextPage}></Button>}
+    //     </div>
+    //   );
+    // }
   }
 }

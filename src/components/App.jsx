@@ -71,7 +71,7 @@ export class App extends Component {
     
   render() {
 
-    const { status, images, page, isButtonShown } = this.state;
+    const { status, images, isButtonShown } = this.state;
 
       return (
         <div className='app'> 

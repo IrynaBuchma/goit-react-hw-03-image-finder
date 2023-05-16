@@ -76,56 +76,19 @@ export class App extends Component {
       return (
         <div className='app'> 
             <Searchbar onSubmit={this.handleFormsubmit}/>
-            {status === 'pending' && (
-            <Loader></Loader>
-            )}
-            {images.length > 0 && (
-            <ImageGallery images={images}/>
-            )}
-            {status === 'rejected' && (
-            <p>Something went wrong, please try again later</p>
-            )}
-            {isButtonShown && (
-            <Button onClick={this.onNextPage}></Button>
-            )}
+              {status === 'pending' && (
+                  <Loader></Loader>
+              )}
+              {images.length > 0 && (
+                  <ImageGallery images={images}/>
+              )}
+              {status === 'rejected' && (
+                  <p>Something went wrong, please try again later</p>
+              )}
+              {isButtonShown && (
+                  <Button onClick={this.onNextPage}></Button>
+              )}
         </div>
       )
-    // if (status === 'idle') {
-    //   return (
-    //     <div className='app'>
-    //       <Searchbar onSubmit={this.handleFormsubmit}></Searchbar>
-    //     </div>
-    //   )
-    // }
-
-    // if (status === 'pending') {
-    //   return (
-    //   <div className='app'>
-    //     <Searchbar onSubmit={this.handleFormsubmit}></Searchbar>
-    //     <ImageGallery images={images}></ImageGallery>
-    //     <Loader></Loader>
-    //     {isButtonShown && <Button onClick={this.onNextPage}></Button>}
-    //   </div> 
-    //   )
-    // }
-
-    // if (status === 'rejected') {
-    //   return (
-    //     <div className='app'>
-    //       <Searchbar onSubmit={this.handleFormsubmit}></Searchbar>
-    //       <p>Something went wrong, please try again later</p>
-    //     </div>
-    //   )
-    // }
-
-    // if (status === 'resolved') {
-    //   return (
-    //     <div className='app'>
-    //       <Searchbar onSubmit={this.handleFormsubmit}></Searchbar>
-    //       <ImageGallery page={page} images={images}></ImageGallery>
-    //       {isButtonShown && <Button onClick={this.onNextPage}></Button>}
-    //     </div>
-    //   );
-    // }
   }
 }
